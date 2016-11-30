@@ -1,0 +1,28 @@
+﻿@model IEnumerable<WebApp.Models.ViewModels.CKEditorImagesViewModel>
+@using WebApp.Extentions;
+
+@{  Layout = null;
+    }
+@foreach (var image in Model)
+{
+    <a href="#" class="returnImage" data-url="@Context.Request.ToUri().GetLeftPart(UriPartial.Authority)@image.Url">
+        <img src="@image.Url" alt="image" @*id="#image"*@ data-source="@image.Url" style="height: 100px; width: auto;" />
+    </a>
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    function updateValue(id, value) {
+        // this gets called from the popup window and updates the field with a new value 
+        document.getElementById(id).value = value;
+    }
+
+    $(document).ready(function () {
+        $(".returnImage").click("click", function (e) {
+            var urlImage = $(this).attr("data-url");
+            //$("#cke_76_textInput").val(urlImage);
+            //window.opener.updateValue("cke_76_textInput", urlImage);
+            window.opener.document.getElementById("cke_76_textInput").value = urlImage;
+            window.close();
+        });
+    });
+</script>
