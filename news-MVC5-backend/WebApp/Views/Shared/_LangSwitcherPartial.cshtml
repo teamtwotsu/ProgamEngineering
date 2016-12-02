@@ -1,0 +1,20 @@
+﻿@using System.Globalization;
+@{
+    //var ci = new CultureInfo("en");
+
+    if (Session["_Culture"] != null && ((CultureInfo)Session["_Culture"]).Name == "en")
+    {
+        <ul class="nav navbar-nav navbar-right langSwithcer">
+            <li><a href="@String.Format("/home/ChangeCulture?lang=ru&returnUrl={0}", Request.Url)">Ru</a></li>
+            <li><a class="active">En</a></li>
+            </ul>
+    }
+    else
+    {
+        <ul class="nav navbar-nav navbar-right langSwithcer">
+            <li><a class="active">Ru</a></li>
+            <li><a href="@String.Format("/home/ChangeCulture?lang=en&returnUrl={0}", Request.Url)">En</a></li>
+            </ul>
+            }
+
+            }

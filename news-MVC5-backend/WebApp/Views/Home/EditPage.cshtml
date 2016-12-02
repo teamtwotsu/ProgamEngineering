@@ -1,0 +1,99 @@
+﻿@model WebApp.Models.ViewModels.EditPageViewModel
+@using System.IO;
+@using WebApp.DataServices;
+@using WebApp.Models;
+@{
+    var ls = new LocalizationService();
+    ViewData["Title"] = ls.Get("Edit");// "Редактирование страницы";
+    bool is_ru = ls.GetCurrentLocal() == "ru";
+}
+
+@section scripts
+{
+
+    <script src="~/lib/ckeditor-standard-source/ckeditor.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+
+            // http://amitraya.blogspot.ru/2014/09/ck-editor-implement-your-own-image.html
+            CKEDITOR.config.height = 400;
+            CKEDITOR.config.width = 600;
+
+            CKEDITOR.replace('html_ru', {
+                //    filebrowserImageBrowseUrl: '/Media/uploadPartial',
+                //    filebrowserImageUploadUrl: '/Media/uploadnow'
+            });
+            CKEDITOR.replace('html_en', {
+                //    filebrowserImageBrowseUrl: '/Media/uploadPartial',
+                //    filebrowserImageUploadUrl: '/Media/uploadnow'
+            });
+        })
+    </script>
+
+}
+<div>
+    <span class="result">@ViewData["result"]</span>
+    <h2>@ViewData["Title"].</h2>
+    <form method="post" asp-action="EditPage" asp-controller="Home" enctype="multipart/form-data">
+        @Html.Hidden("ID", Model.page.ID)
+        <div class="clearpadding">
+            <div class="col-md-8">
+                <div class="editlabel">@ls.Get("Header") ru</div>
+                <div class="editfield">@Html.TextBox("header_ru", Model.page.header_ru)</div>
+
+                 <div class="editlabel">@ls.Get("Header") en</div>
+                <div class="editfield">@Html.TextBox("header_en", Model.page.header_en)</div>
+
+                <div class="editlabel">@ls.Get("Text") ru</div>
+                <div class="editfield">
+                    <textarea name="html_ru" id="html_ru">@Model.page.html_ru</textarea>
+                </div>
+
+                <div class="editlabel">@ls.Get("Text") en</div>
+                <div class="editfield">
+                    <textarea name="html_en" id="html_en">@Model.page.html_en</textarea>
+                </div>
+
+                @{
+                    List<SelectListItem> cats = new List<SelectListItem>();
+                    List<pageCategory> pageCategories = new PageServices().GetPageCategories();
+                    foreach (var item in pageCategories)
+                    {
+                        cats.Add(new SelectListItem { Text =  is_ru ? item.name_ru : item.name_en, Value = item.ID.ToString() });
+                    }
+                }
+
+                @Html.DropDownList("category_ID", new SelectList(cats, "Value", "Text", Model.page.pagCategory_ID), new { id = "category_ID" })
+
+                <div class="topWrapper">
+                    <label><input type="radio" value="true" name="isTop" @(Model.page.isTop ? "checked=checked" : "") />@ls.Get("Top")</label>
+                    &nbsp;
+                    <label><input type="radio" value="false" name="isTop" @(!Model.page.isTop ? "checked=checked" : "") />@ls.Get("Ordinary")</label>
+                </div>
+                <br />
+                <button type="submit" name="add" value="add">@ls.Get("CreateNew")</button>
+                <button type="submit" name="save" value="save">@ls.Get("Save")</button>
+                <button type="submit" name="delete" value="delete">@ls.Get("Delete")</button>
+            </div>
+            <div class="col-md-4">
+                <input id="pageImage" name="files" type="file" />
+                @{ string src = "";
+                    if (!String.IsNullOrEmpty(Model.page.image))
+                    {
+                        string path = System.IO.Path.Combine(Model.webRoot, "Content\\Images\\PageImages");
+                        if (File.Exists(System.IO.Path.Combine(path, Model.page.image)))
+                        {
+                            src = String.Format("/Content/Images/PageImages/{0}", Model.page.image);
+                <a href="@src" target="_blank"><img class="pageImage" src="@src" /></a>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="clear"></div>

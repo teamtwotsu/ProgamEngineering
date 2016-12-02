@@ -1,0 +1,45 @@
+﻿@model IEnumerable<WebApp.Models.localization>
+@using WebApp.DataServices;
+@{
+    ViewBag.Title = "Localizations";
+    var ls = new LocalizationService();
+}
+
+<h2>@ls.Get("Localizations")</h2>
+<span class="result">@ViewData["result"]</span>
+<p>
+    @Html.ActionLink(ls.Get("CreateNew"), "EditLocalization", "Admin", new { id = 0 }, null)
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.key)
+        </th>
+        <th>
+            EN
+        </th>
+        <th>
+            RU
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.key)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.en)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ru)
+        </td>
+        <td>
+            @Html.ActionLink(ls.Get("Edit"), "EditLocalization", new { id=item.ID }) |
+            @Html.ActionLink(ls.Get("Delete"), "DeleteLocalization", new { id=item.ID, onclick = "return confirm('действительно хотите удалить проект?')" })
+        </td>
+    </tr>
+}
+
+</table>

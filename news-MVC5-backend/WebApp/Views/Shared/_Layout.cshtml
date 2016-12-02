@@ -1,0 +1,80 @@
+﻿@using WebApp.App_LocalResources;
+@using WebApp.DataServices;
+@using WebApp.Models.ViewModels
+@{ var ls = new LocalizationService();}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @{bool is_ru = ls.GetCurrentLocal() == "ru";}
+    @{ int i = 0; }
+
+</head>
+<body>    
+
+<div class="row head">
+       <div class="col-md-3 logo">
+            <a href=""><img src="~/Content/images/logo.png" /></a>
+        </div>
+        <div class="col-md-3 textabout">
+            <p>@(is_ru ? "Факультет" : "Computer science") <br />@(is_ru ? "Информатики" : "department") </p>
+        </div>
+        <div class="col-md-3 slon">
+            <img src="~/Content/images/aaa.png" />
+        </div>
+        <div class="col-md-3">
+            @Html.Partial("_LoginPartial")
+            @Html.Partial("_LangSwitcherPartial")
+        </div>
+</div>
+
+<div class="full-container">
+                @RenderBody()
+            </div>
+
+<footer>
+    @*<ul class="indexCats">
+        @foreach (var pc_item in Model.pageCategories)
+        {
+            if (i < 5)
+            {
+                <li>
+                    <a href="/home/index/@pc_item.ID" class="button">
+                        @(is_ru ? pc_item.name_ru : pc_item.name_en)
+                    </a>
+                </li>
+                i = i + 1;
+            }
+
+        }
+    </ul>*@
+
+    @*<div class="btn-group">
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle dropup" data-toggle="dropdown">
+                Dropdown
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#">Dropdown ссылка</a></li>
+                <li><a href="#">Dropdown ссылка</a></li>
+            </ul>
+        </div>
+        <button type="button" class="btn btn-default"><a href="/home/index/@Model.name_ru">
+            @(is_ru ? Model.name_ru : Model.name_en)
+        </a></button>
+
+    </div>*@
+
+</footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

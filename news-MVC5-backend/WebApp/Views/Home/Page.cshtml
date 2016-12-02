@@ -1,0 +1,80 @@
+﻿@model WebApp.Models.ViewModels.PageViewModel
+@using System.IO;
+@using WebApp.Extentions;
+@using WebApp.DataServices;
+@{
+    ViewData["Title"] = "Home Page";
+
+    bool isAdmin = User.Identity.IsAuthenticated;
+    var pageCats = new PageServices().GetPageCategories();
+}
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+
+
+         
+        })
+    </script>
+
+}
+
+<div class="row news">
+
+    <div class="col-md-9">
+        
+        @{ var page_item = Model.page; }
+       
+            <div class="new" id="@string.Format("new{0}", page_item.ID)">
+
+                
+            
+                <h2>@page_item.header</h2>
+            <p class="category">Категория: @pageCats.First(p => p.ID == page_item.pagCategory_ID).name</p>
+            <span class="created">@page_item.created.ToShortDateString()</span>
+            @if (!String.IsNullOrEmpty(page_item.image))
+                {
+                    var path = System.IO.Path.Combine(Model.webRoot, "Images\\PageImages");
+                    if (File.Exists(System.IO.Path.Combine(path, page_item.image)))
+                    {
+                        string src = String.Format("/Images/PageImages/{0}", page_item.image);
+                        <a href="@src" target="_blank">
+                        <img class="pageImage" src="@src" />
+                        </a>
+                }
+            }
+
+            @{
+                string text = stringUtils.truncate(sanitizer.ConvertHtml(page_item.html ?? ""), 400, "");
+                // ищем пробел
+                int pos = text.LastIndexOf(' ');
+                if (pos > 0)
+                {
+                    text = text.Substring(0, pos);
+                }
+            }
+            <div class="shortText" data-id="@page_item.ID">
+            @text
+            <a class="openText" data-id="@page_item.ID">развернуть</a>
+            </div>
+
+            <div class="fullText" data-id="@page_item.ID" style="display: none;">
+            @Html.Raw(page_item.html)
+            <a class="closeText" data-id="@page_item.ID">свернуть</a>
+            </div>
+
+            @if (isAdmin)
+                {
+                    <a href="/Home/EditPage/@page_item.ID" class="editPage">
+                    <img src="~/images/edit.png" />
+                    </a>
+            }
+            </div>
+
+             
+    </div>
+
+    <div class="col-md-3 indexCatsWrapper">
+        
+    </div>
+</div>
